@@ -1,0 +1,29 @@
+﻿@model PostDto
+
+<div class="col col-lg-4 col-md-6 col-12 mb-5">
+
+    <div class="card h-100 border-0 border-bottom border-top border-4">
+        <a asp-action="Details"
+           asp-route-id="@Model.Id">
+            <img src="@Url.Content(Model.MainPostImagePath)"
+                 class="card-img-top rounded rounded-1 mt-3"
+                 alt="@Model.Title">
+        </a>
+        <div class="card-body p-1">
+        </div>
+        <div class="card-footer bg-white">
+            <h5 class="card-title">
+                <a asp-action="Details"
+                   asp-route-id="@Model.Id"
+                   class="text-decoration-none">@Model.Title</a>
+            </h5>
+            <p class="card-text">
+                <a asp-action="Index"
+                   asp-route-categoryId="@Model.Category!.Id"
+                   class="badge text-bg-warning rounded-pill text-decoration-none p-2">
+                    @Model.Category?.Name
+                </a>
+            </p>
+        </div>
+    </div>
+</div>

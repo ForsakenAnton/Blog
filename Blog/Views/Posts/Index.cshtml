@@ -1,0 +1,27 @@
+﻿@model PostsIndexVM
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="display-2">Posts</h1>
+<hr class="bg-success mb-5" style="height:5px;" />
+
+<div class="text-center">
+    <div class="dropdown-center mb-5">
+        <partial name="_CategoriesDropDownListPartial"
+                 model="new CategoriesDropDownListVM()
+                        {
+                            Categories = Model.Categories,
+                            CategoryId = Model.CategoryId
+                        }" />
+    </div>
+</div>
+
+
+<div class="row g-3">
+    @foreach (PostDto post in Model.Posts)
+    {
+        <partial name="_PostViewPartial" , model="post" />
+    }
+</div>

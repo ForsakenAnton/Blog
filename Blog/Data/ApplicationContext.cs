@@ -10,7 +10,12 @@ namespace Blog.Data
         : base(options)
         {
             //Database.EnsureDeleted();
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
+
+        public DbSet<Post> Posts => Set<Post>(); // { get; set; } = default!; то же самое
+        public DbSet<Category> Categories => Set<Category>();
+        public DbSet<Comment> Comments => Set<Comment>();
+        //public DbSet<User> Users { get; set; }
     }
 }

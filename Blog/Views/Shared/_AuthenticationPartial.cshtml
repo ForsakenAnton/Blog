@@ -1,0 +1,8 @@
+﻿@if (User.Identity!.IsAuthenticated)
+{
+    <partial name="_LogoutPartial" />
+}
+else
+{
+    <partial name="_LoginRegistrationPartial" />
+}

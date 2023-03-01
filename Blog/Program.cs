@@ -3,10 +3,19 @@ using Blog.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Blog.Services.EmailService;
+using Blog.AutoMapperProfiles;
+using Blog.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddAutoMapper(
+    typeof(UserProfile),
+    typeof(PostProfile),
+    typeof(CategoryProfile),
+    typeof(CommentProfile)
+    );
 
 builder.Services.AddTransient<IEmailService, EmailService>(); // вот здесь
 
@@ -32,15 +41,78 @@ builder.Services
 // Благодаря последнему вызову добавляется функциональность генерации токенов,
 // которые отсылаются в письме (gmail) для подтверждения
 
+builder.Services.AddAuthorization(options =>
+{
+    //options.AddPolicy(
+    //    MyPolicies.SuperAdminAccessOnly,
+    //    policy =>
+    //    {
+    //        policy.RequireClaim(MyClaims.SuperAdmin);
+    //        policy.RequireClaim(MyClaims.Admin);
+    //        policy.RequireClaim(MyClaims.PostsWriter);
+    //    });
+
+    //options.AddPolicy(
+    //    MyPolicies.AdminAndAboveAccess,
+    //    policy =>
+    //    {
+    //        policy.RequireClaim(MyClaims.Admin);
+    //        policy.RequireClaim(MyClaims.PostsWriter);
+    //    });
+
+    //options.AddPolicy(
+    //    MyPolicies.PostWriterAndAboveAccess,
+    //    policy => policy.RequireClaim(MyClaims.PostsWriter));
+
+
+    options.AddPolicy(
+        MyPolicies.PostsWriterAndAboveAccess,
+        policy => policy.RequireAssertion(context =>
+        {
+            return context.User.HasClaim(
+                claim => claim.Type is 
+                    MyClaims.SuperAdmin or 
+                    MyClaims.Admin or 
+                    MyClaims.PostsWriter);
+        }));
+
+    options.AddPolicy(
+        MyPolicies.AdminAndAboveAccess,
+        policy => policy.RequireAssertion(context =>
+        {
+            return context.User.HasClaim(
+                claim => claim.Type is 
+                    MyClaims.SuperAdmin or
+                    MyClaims.Admin);
+        }));
+
+    options.AddPolicy(
+        MyPolicies.SuperAdminAccessOnly,
+        policy => policy.RequireAssertion(context =>
+        {
+            return context.User.HasClaim(
+                claim => claim.Type is MyClaims.SuperAdmin);
+        }));
+});
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    IServiceProvider services = scope.ServiceProvider;
+    await SeedData.Initialize(
+        services,
+        app.Configuration
+        );
+}
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
