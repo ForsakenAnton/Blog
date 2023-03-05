@@ -48,21 +48,30 @@ namespace Blog.Controllers
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Posts == null)
+            if(id == null || _context.Posts == null)
             {
                 return NotFound();
             }
 
-            var post = await _context.Posts
+            Post? post = await _context.Posts
                 .Include(p => p.Category)
                 .Include(p => p.User)
+                .Include(p => p.Comments)!
+                    .ThenInclude(c => c.User)
+                // .ThenInclude(c => c.ChildComments)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (post == null)
             {
                 return NotFound();
             }
 
-            return View(post);
+            PostDetailVM model = new PostDetailVM
+            {
+                Post = _mapper.Map<PostDto>(post)
+            };
+
+            return View(model);
         }
 
         // GET: Posts/Create

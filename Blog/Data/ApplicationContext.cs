@@ -1,6 +1,7 @@
 ﻿using Blog.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace Blog.Data
 {
@@ -17,5 +18,15 @@ namespace Blog.Data
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Comment> Comments => Set<Comment>();
         //public DbSet<User> Users { get; set; }
+
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<Comment>()
+        //    .HasOne(c => c.ParentComment)
+        //    .WithMany(c => c.ChildComments)
+        //    .HasForeignKey(c => c.ParentCommentId)
+        //    .OnDelete(DeleteBehavior.Cascade);
+        //}
     }
 }
