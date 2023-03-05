@@ -16,3 +16,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.removedTransform {
+    transform: translateX(100vw);
+}
+
+.removedTransition {
+    transition: transform 1s 0s;
+}
