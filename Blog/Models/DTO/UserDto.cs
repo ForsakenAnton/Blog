@@ -8,6 +8,6 @@ namespace Blog.Models.DTO
         //public string Name { get; set; } = default!;
         //public string Surname { get; set; } = default!;
         public ICollection<PostDto>? Posts { get; set; }
-        public ICollection<CommentDto>? Comments { get; set; }
+        public ICollection<PostDto>? Comments { get; set; }
     }
 }
